@@ -2177,20 +2177,16 @@ RFC 7540                         HTTP/2                         May 2015
    SETTINGS帧。但是，接收方必须（MUST）准备接收超过这个窗口大小的数据，
    因为发送方也许在处理SETTINGS帧之前，发送了超过这个较低限制的数据。
 
-   发送了减少初始流控窗口大小的SETTINGS帧以后，接收方可以（MAY）继续处理超
-   过流控限制的流。允许流继续
-   After sending a SETTINGS frame that reduces the initial flow-control
-   window size, a receiver MAY continue to process streams that exceed
-   flow-control limits.  Allowing streams to continue does not allow the
-   receiver to immediately reduce the space it reserves for flow-control
-   windows.  Progress on these streams can also stall, since
-   WINDOW_UPDATE frames are needed to allow the sender to resume
-   sending.  The receiver MAY instead send a RST_STREAM with an error
-   code of FLOW_CONTROL_ERROR for the affected streams.
+   发送了减少初始流控窗口大小的SETTINGS帧以后，接收方可以（MAY）继续处理
+   超过流控限制的流。允许流继续意味着不允许接收方立即它为降低流控窗口保留
+   的空间。对这些流的处理也可以先放一放，因为需要WINDOW_UPDATE帧来允许发
+   送方继续发送。对于受到影响的流，接收方也可以（MAY）选择发送一个包含
+   FLOW_CONTROL_ERROR错误码的RST_STREAM帧。
 
 6.10.  CONTINUATION
 
-   The CONTINUATION frame (type=0x9) is used to continue a sequence of
+   CONTINUATION帧(type=0x9)用来继续发送头块片段序列。可以发送任何数量的
+   CONTINUATION帧，只要上述的帧在同样流上并且是一个HEADERS、PUSH_PROMISE或CONTINUATION帧。 frame (type=0x9) is used to continue a sequence of
    header block fragments (Section 4.3).  Any number of CONTINUATION
    frames can be sent, as long as the preceding frame is on the same
    stream and is a HEADERS, PUSH_PROMISE, or CONTINUATION frame without
