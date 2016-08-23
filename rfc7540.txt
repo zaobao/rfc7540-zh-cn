@@ -2168,18 +2168,17 @@ RFC 7540                         HTTP/2                         May 2015
 
    SETTINGS帧不能改变连接的流控窗口。 
 
-   An endpoint MUST treat a change to SETTINGS_INITIAL_WINDOW_SIZE that
-   causes any flow-control window to exceed the maximum size as a
-   connection error (Section 5.4.1) of type FLOW_CONTROL_ERROR.
+   如果SETTINGS_INITIAL_WINDOW_SIZE帧的改变导致流控窗口超过最大值，端点
+   必须（MUST）将其处理为一个FLOW_CONTROL_ERROR类型的连接错误（5.4.1小节）。
 
 6.9.3.  减少流控窗口大小
 
-   A receiver that wishes to use a smaller flow-control window than the
-   current size can send a new SETTINGS frame.  However, the receiver
-   MUST be prepared to receive data that exceeds this window size, since
-   the sender might send data that exceeds the lower limit prior to
-   processing the SETTINGS frame.
+   接收方如果希望使用一个比当前大小更小的初始流控窗口，可以发送一个新的
+   SETTINGS帧。但是，接收方必须（MUST）准备接收超过这个窗口大小的数据，
+   因为发送方也许在处理SETTINGS帧之前，发送了超过这个较低限制的数据。
 
+   发送了减少初始流控窗口大小的SETTINGS帧以后，接收方可以（MAY）继续处理超
+   过流控限制的流。允许流继续
    After sending a SETTINGS frame that reduces the initial flow-control
    window size, a receiver MAY continue to process streams that exceed
    flow-control limits.  Allowing streams to continue does not allow the
