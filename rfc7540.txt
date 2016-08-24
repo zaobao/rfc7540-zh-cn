@@ -2318,10 +2318,8 @@ RFC 7540                         HTTP/2                         May 2015
    4.  作为一个可选项，一个HEADERS帧，后接零个或更多的CONTINUATION帧，
        如果有，也包括拖挂部分（trailer-part）（请看[RFC7230]4.1.2节）。
 
-   The last frame in the sequence bears an END_STREAM flag, noting that
-   a HEADERS frame bearing the END_STREAM flag can be followed by
-   CONTINUATION frames that carry any remaining portions of the header
-   block.
+   序列中的最后一帧带有END_STREAM标记，在任何带有头块剩余部分的CONTINUATION
+   帧的后面，只能有带着END_STREAM标记的HEADERS帧。
 
    Other frames (from any stream) MUST NOT occur between the HEADERS
    frame and any CONTINUATION frames that might follow.
