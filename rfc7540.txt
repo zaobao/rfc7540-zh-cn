@@ -447,8 +447,8 @@ RFC 7540                         HTTP/2                         May 2015
    HTTP/2。服务器也一定不要再发送这个头域。
 
    HTTP2-Settings头域的内容是SETTINGS帧（6.5小节）的有效载荷，编码为
-   base64url字符串（就是，[RFC4648]的第5节中描述的URL和文件名安全的Base64
-   编码，忽略任何结尾的'-'字符）。Token68的ABNF[RFC5234]产生式在[RFC7235]
+   base64url字符串（也就是，[RFC4648]的第5节中描述的URL和文件名安全的Base64
+   编码，忽略任何末尾填充的'='字符）。Token68的ABNF[RFC5234]产生式在[RFC7235]
    的2.1小节中定义。
 
    因为升级仅适用于当前连接，所以发送HTTP2-Settings头域的客户端也必须发送
@@ -2321,19 +2321,16 @@ RFC 7540                         HTTP/2                         May 2015
    序列中的最后一帧带有END_STREAM标记，在任何带有头块剩余部分的CONTINUATION
    帧的后面，只能有带着END_STREAM标记的HEADERS帧。
 
-   Other frames (from any stream) MUST NOT occur between the HEADERS
-   frame and any CONTINUATION frames that might follow.
+   （在任何流中）HEADERS帧和其后可能跟随的CONTINUATION帧之间，必须不
+   （MUST NOT）能出现任何其他的帧。
 
-   HTTP/2 uses DATA frames to carry message payloads.  The "chunked"
-   transfer encoding defined in Section 4.1 of [RFC7230] MUST NOT be
-   used in HTTP/2.
+   HTTP/2使用DATA帧来携带消息载荷。[RFC7230] 4.1节中定义的"chunked"
+   传输编码不能用在HTTP/2中。
 
-   Trailing header fields are carried in a header block that also
-   terminates the stream.  Such a header block is a sequence starting
-   with a HEADERS frame, followed by zero or more CONTINUATION frames,
-   where the HEADERS frame bears an END_STREAM flag.  Header blocks
-   after the first that do not terminate the stream are not part of an
-   HTTP request or response.
+   如果结尾的头域在一个头块中，这个头块也会终结此流。这样一个头块是一个序列，
+   以HEADERS帧开头，后接零个或多个CONTINUATION帧，其中HEADERS帧带有一个
+   END_STREAM标记。第一个没有将流终结的头块，其后的头块都不是HTTP请求或响应
+   的一部分。
 
 
 
