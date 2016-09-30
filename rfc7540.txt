@@ -2329,8 +2329,8 @@ RFC 7540                         HTTP/2                         May 2015
 
    如果结尾的头域在一个头块中，这个头块也会终结此流。这样一个头块是一个序列，
    以HEADERS帧开头，后接零个或多个CONTINUATION帧，其中HEADERS帧带有一个
-   END_STREAM标记。第一个没有将流终结的头块，其后的头块都不是HTTP请求或响应
-   的一部分。
+   END_STREAM标记。第一个头块不会将流终结，并且其后的头块都不是HTTP请求或
+   响应的一部分。
 
 
 
@@ -2342,54 +2342,39 @@ Belshe, et al.               Standards Track                   [Page 52]
 RFC 7540                         HTTP/2                         May 2015
 
 
-   A HEADERS frame (and associated CONTINUATION frames) can only appear
-   at the start or end of a stream.  An endpoint that receives a HEADERS
-   frame without the END_STREAM flag set after receiving a final (non-
-   informational) status code MUST treat the corresponding request or
-   response as malformed (Section 8.1.2.6).
+   HEADERS帧（以及相关CONTINUATION帧）只能出现在流的开始或结尾。接收到最
+   终（不含信息的）状态码后，端点若收到不带END_STREAM标记的HEADERS帧，必
+   须（MUST）将相应的请求或响应当成格式不正确的（8.1.2.5节）。
 
-   An HTTP request/response exchange fully consumes a single stream.  A
-   request starts with the HEADERS frame that puts the stream into an
-   "open" state.  The request ends with a frame bearing END_STREAM,
-   which causes the stream to become "half-closed (local)" for the
-   client and "half-closed (remote)" for the server.  A response starts
-   with a HEADERS frame and ends with a frame bearing END_STREAM, which
-   places the stream in the "closed" state.
+   HTTP请求/响应的交换完全消耗单条流。请求以一个HEADERS帧开始，使流进入
+   "open"状态。请求以一个带END_STREAM的帧结束，此帧使流变成对于客户端来说
+   的"half-closed (local)"状态以及对于服务器来说的"half-closed (remote)"
+   状态。响应以一个HEADERS帧开始，并且以一个带END_STREAM的帧结束，此帧会
+   将流置于"closed"状态。
 
-   An HTTP response is complete after the server sends -- or the client
-   receives -- a frame with the END_STREAM flag set (including any
-   CONTINUATION frames needed to complete a header block).  A server can
-   send a complete response prior to the client sending an entire
-   request if the response does not depend on any portion of the request
-   that has not been sent and received.  When this is true, a server MAY
-   request that the client abort transmission of a request without error
-   by sending a RST_STREAM with an error code of NO_ERROR after sending
-   a complete response (i.e., a frame with the END_STREAM flag).
-   Clients MUST NOT discard responses as a result of receiving such a
-   RST_STREAM, though clients can always discard responses at their
-   discretion for other reasons.
+   服务端发送或客户端接收到设有END_STREAM标记的帧（包括一个完整头块所需的
+   任何CONTINUATION帧）以后，HTTP响应就完成了。在客户端发送一整个请求之前，
+   如果响应不依赖于请求还没发送或接收的部分，服务端就可以发送一个完整的响
+   应。这种情形下，服务端在发送完一整个响应（也可以说是，一个带有END_STREAM
+   的帧）以后，就可以（MAY）发送一个带有NO_ERROR错误码的RST_STREAM帧，来请
+   求客户端无错地终止请求传输。客户端必须不（MUST NOT）因为这个RST_STREAM，
+   而丢弃响应响应，但慎重起见，客户端还是一直可以为了其他原因而丢弃响应。
 
 8.1.1.  从 HTTP/2 升级
 
-   HTTP/2 removes support for the 101 (Switching Protocols)
-   informational status code ([RFC7231], Section 6.2.2).
+   HTTP/2去除了101（Switching Protocols）信息状态码（[RFC7231]，6.2.2节）。
 
-   The semantics of 101 (Switching Protocols) aren't applicable to a
-   multiplexed protocol.  Alternative protocols are able to use the same
-   mechanisms that HTTP/2 uses to negotiate their use (see Section 3).
+   101（Switching Protocols）的语义不适用于一个多路复用的协议。替代的协议可
+   以使用HTTP/2所用的同样的机制，来协商他们的使用（请看第3节）。
 
 8.1.2.  HTTP 头域
 
-   HTTP header fields carry information as a series of key-value pairs.
-   For a listing of registered HTTP headers, see the "Message Header
-   Field" registry maintained at <https://www.iana.org/assignments/
-   message-headers>.
+   HTTP头域携带了一系列键值对信息。已注册的HTTP头列表，请看“消息头域”注册表，
+   维护地址：<https://www.iana.org/assignments/message-headers>。
 
-   Just as in HTTP/1.x, header field names are strings of ASCII
-   characters that are compared in a case-insensitive fashion.  However,
-   header field names MUST be converted to lowercase prior to their
-   encoding in HTTP/2.  A request or response containing uppercase
-   header field names MUST be treated as malformed (Section 8.1.2.6).
+   就像在HTTP/1.x中一样，头字段名是ASCII字符组成的字符串，并且是大小写不敏
+   感的。但是，HTTP/2中，头字段名在编码之前必须（MUST）转成小写。含有大写头
+   字段名请求或响应必须（MUST）被当成格式不规范的（8.1.2.6节）。
 
 
 
